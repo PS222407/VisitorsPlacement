@@ -34,7 +34,7 @@ public class CourseTests
         // Assert
         Assert.That(result1 && result2, Is.True);
     }
-    
+
     [Test]
     public void Add_groups_with_non_unique_emails_fails()
     {
@@ -65,7 +65,7 @@ public class CourseTests
         // Assert
         Assert.That(result1 && result2, Is.False);
     }
-    
+
     [Test]
     public void Add_group_too_late_fails()
     {
@@ -150,16 +150,16 @@ public class CourseTests
             new Visitor("email@i13psum.email", DateTime.Parse("2020-08-20")),
         };
         Group group6 = new(visitors6);
-        
+
         course.TryAddGroup(group1);
         course.TryAddGroup(group2);
         course.TryAddGroup(group3);
         course.TryAddGroup(group4);
         course.TryAddGroup(group5);
-        
+
         // Act
         course.CalculateVisitorPlacements();
-        
+
         // Assert
     }
 }

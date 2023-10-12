@@ -24,7 +24,7 @@ public class GroupTests
         // Assert
         Assert.That(result, Is.True);
     }
-    
+
     [Test]
     public void Group_validate_fails()
     {

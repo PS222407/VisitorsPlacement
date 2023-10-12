@@ -19,7 +19,7 @@ public class Group
     public Group(List<Visitor> visitors)
     {
         _id = Interlocked.Increment(ref _nextId);
-        
+
         Visitors = visitors;
         foreach (Visitor visitor in visitors)
         {

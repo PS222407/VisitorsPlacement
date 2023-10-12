@@ -57,7 +57,7 @@ public class Course
                 chair.AssignVisitor(visitor);
                 visitor.AssignChair(chair);
                 _chairs.Add(chair);
-                
+
                 if (columnNumber + 1 > MaxRowLength)
                 {
                     columnNumber = 1;
@@ -79,6 +79,6 @@ public class Course
             }
         }
 
-        var a = _chairs;
+        List<Chair>? a = _chairs;
     }
 }
