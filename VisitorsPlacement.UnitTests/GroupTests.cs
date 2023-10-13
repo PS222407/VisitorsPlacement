@@ -45,7 +45,7 @@ public class GroupTests
         // Assert
         Assert.That(result, Is.False);
     }
-    
+
     [Test]
     public void Group_validate_not_enough_adults_fails()
     {
@@ -53,7 +53,7 @@ public class GroupTests
         List<Visitor> visitors = new()
         {
             new Visitor("lorem@emailc.email", DateTime.Parse("2000-11-14")),
-            
+
             new Visitor("ipsum@email1.email", DateTime.Parse("2020-05-09")),
             new Visitor("email@lorem2.email", DateTime.Parse("2020-12-29")),
             new Visitor("email@ipsum3.email", DateTime.Parse("2020-08-20")),
@@ -76,8 +76,8 @@ public class GroupTests
 
         // Assert
         Assert.That(result, Is.False);
-    } 
-    
+    }
+
     [Test]
     public void Group_validate_enough_adults_successfully()
     {
@@ -86,7 +86,7 @@ public class GroupTests
         {
             new Visitor("lorem@emailc.email", DateTime.Parse("2000-11-14")),
             new Visitor("loredm@emailc.email", DateTime.Parse("2000-11-14")),
-            
+
             new Visitor("ipsum@email1.email", DateTime.Parse("2020-05-09")),
             new Visitor("email@lorem2.email", DateTime.Parse("2020-12-29")),
             new Visitor("email@ipsum3.email", DateTime.Parse("2020-08-20")),
@@ -109,8 +109,8 @@ public class GroupTests
 
         // Assert
         Assert.That(result, Is.True);
-    } 
-    
+    }
+
     [Test]
     public void Group_validate_only_adults_successfully()
     {
