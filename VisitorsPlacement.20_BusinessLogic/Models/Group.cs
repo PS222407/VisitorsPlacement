@@ -6,6 +6,8 @@ public class Group
 
     private readonly int _id;
 
+    private const int MaxChildrenPerAdult = 9;
+
     public List<Visitor> Visitors { get; private set; }
 
     public Group(Visitor visitor)
@@ -29,11 +31,32 @@ public class Group
 
     public bool IsValid(DateTime startDateEvent)
     {
-        bool containsAdult = Visitors.Any(v => v.IsAdult(startDateEvent));
+        bool containsEnoughAdults = ContainsEnoughAdults(startDateEvent);
         bool visitorsAreValid = Visitors.All(v => v.IsValid());
         bool visitorsHaveUniqueEmails = Visitors.Select(v => v.Email).Distinct().Count() == Visitors.Count;
 
-        return containsAdult && visitorsAreValid && visitorsHaveUniqueEmails;
+        return containsEnoughAdults && visitorsAreValid && visitorsHaveUniqueEmails;
+    }
+
+    private bool ContainsEnoughAdults(DateTime startDateEvent)
+    {
+        int numberOfChildren = Visitors.Count(v => !v.IsAdult(startDateEvent));
+        int numberOfAdults = Visitors.Count(v => v.IsAdult(startDateEvent));
+
+        if (numberOfAdults < 1)
+        {
+            return false;
+        }
+
+        if (numberOfChildren > 0)
+        {
+            if ((int)Math.Ceiling(numberOfChildren / (double)numberOfAdults) > MaxChildrenPerAdult)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public override string ToString()
