@@ -1,4 +1,5 @@
-﻿using VisitorsPlacement_20_BusinessLogic.Services;
+﻿using VisitorsPlacement_20_BusinessLogic.Exceptions;
+using VisitorsPlacement_20_BusinessLogic.Services;
 
 namespace VisitorsPlacement_20_BusinessLogic.Models;
 
@@ -40,41 +41,81 @@ public class Course
 
     public void CalculateVisitorPlacements()
     {
-        List<Group> groupsOrderedByChildrenFirstThenRegistrationDate = _groups.OrderByDescending(g => g.Visitors.Any(v => !v.IsAdult(_startDate))).ThenBy(g => g.RegistrationDate).ToList();
+        List<Group> groupsWithChildren = _groups.Where(g => g.GetChildren(_startDate).Any()).OrderBy(g => g.RegistrationDate).ToList();
 
-        int rowNumber = 1;
-        int columnNumber = 1;
+        int columnNumber = 0;
         string sectionLetter = "A";
 
-        foreach (Group group in groupsOrderedByChildrenFirstThenRegistrationDate)
+        bool firstLoop = true;
+        foreach (Group group in groupsWithChildren)
         {
-            List<Visitor> visitorsOrderedByChildren = group.Visitors.OrderBy(v => v.IsAdult(_startDate)).ToList();
-            foreach (Visitor visitor in visitorsOrderedByChildren)
+            if (!firstLoop)
             {
-                Chair chair = new(rowNumber, columnNumber, sectionLetter);
-                chair.AssignVisitor(visitor);
-                visitor.AssignChair(chair);
-                _chairs.Add(chair);
+                sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
+                columnNumber = 0;
+            }
 
+            firstLoop = false;
+
+            foreach (Visitor visitor in new List<Visitor>(group.Visitors.OrderBy(v => v.IsAdult(_startDate))))
+            {
                 if (columnNumber + 1 > MaxRowLength)
                 {
+                    sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
                     columnNumber = 1;
-
-                    if (rowNumber + 1 > MaxRows)
-                    {
-                        rowNumber = 1;
-                        sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
-                    }
-                    else
-                    {
-                        rowNumber++;
-                    }
                 }
                 else
                 {
                     columnNumber++;
                 }
+
+                Chair chair = new(1, columnNumber, sectionLetter);
+                if (chair.ColumnNumber == MaxRowLength)
+                {
+                    Visitor? adult = group.GetAdults(_startDate).FirstOrDefault(adult => adult.Chair == null);
+
+                    if (adult == null)
+                    {
+                        throw new TestException();
+                    }
+
+                    adult.AssignChair(chair);
+                }
+                else
+                {
+                    if (visitor.Chair == null)
+                    {
+                        visitor.AssignChair(chair);
+                    }
+                }
             }
+
+            // foreach (Visitor visitor in visitorsOrderedByChildren)
+            // {
+            //     Chair chair = new(rowNumber, columnNumber, sectionLetter);
+            //     chair.AssignVisitor(visitor);
+            //     visitor.AssignChair(chair);
+            //     _chairs.Add(chair);
+            //
+            //     if (columnNumber + 1 > MaxRowLength)
+            //     {
+            //         columnNumber = 1;
+            //
+            //         if (rowNumber + 1 > MaxRows)
+            //         {
+            //             rowNumber = 1;
+            //             sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
+            //         }
+            //         else
+            //         {
+            //             rowNumber++;
+            //         }
+            //     }
+            //     else
+            //     {
+            //         columnNumber++;
+            //     }
+            // }
         }
 
         List<Chair>? a = _chairs;

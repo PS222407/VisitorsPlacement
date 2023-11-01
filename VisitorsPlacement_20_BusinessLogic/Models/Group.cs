@@ -31,6 +31,16 @@ public class Group
         }
     }
 
+    public List<Visitor> GetChildren(DateTime startDateEvent)
+    {
+        return Visitors.Where(v => !v.IsAdult(startDateEvent)).ToList();
+    }
+
+    public List<Visitor> GetAdults(DateTime startDateEvent)
+    {
+        return Visitors.Where(v => v.IsAdult(startDateEvent)).ToList();
+    }
+
     public bool IsValid(DateTime startDateEvent)
     {
         bool containsEnoughAdults = ContainsEnoughAdults(startDateEvent);
@@ -42,8 +52,8 @@ public class Group
 
     private bool ContainsEnoughAdults(DateTime startDateEvent)
     {
-        int numberOfChildren = Visitors.Count(v => !v.IsAdult(startDateEvent));
-        int numberOfAdults = Visitors.Count(v => v.IsAdult(startDateEvent));
+        int numberOfChildren = GetChildren(startDateEvent).Count;
+        int numberOfAdults = GetAdults(startDateEvent).Count;
 
         if (numberOfAdults < 1)
         {

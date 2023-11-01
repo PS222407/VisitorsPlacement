@@ -86,7 +86,7 @@ public class CourseTests
         // Arrange
         Course course = new(DateTime.Now.AddDays(23));
 
-        List<Visitor> visitors5 = new()
+        List<Visitor> visitors1 = new()
         {
             new Visitor("lorem@e13mail.1email", DateTime.Parse("2000-11-14")),
             new Visitor("lorem@e14mail.1email", DateTime.Parse("2000-11-14")),
@@ -99,16 +99,18 @@ public class CourseTests
             new Visitor("email@i11psum.1email", DateTime.Parse("2000-08-20")),
             new Visitor("email@i13psum.1email", DateTime.Parse("2000-08-20")),
         };
-        Group group5 = new(visitors5);
-        List<Visitor> visitors1 = new()
+        Group group1 = new(visitors1);
+        
+        List<Visitor> visitors2 = new()
         {
             new Visitor("lorem@email.email", DateTime.Parse("2000-11-14")),
             new Visitor("ipsum@email.email", DateTime.Parse("2020-05-09")),
             new Visitor("email@lorem.email", DateTime.Parse("2020-12-29")),
             new Visitor("email@ipsum.email", DateTime.Parse("2020-08-20")),
         };
-        Group group1 = new(visitors1);
-        List<Visitor> visitors2 = new()
+        Group group2 = new(visitors2);
+        
+        List<Visitor> visitors3 = new()
         {
             new Visitor("lore1m@email.email", DateTime.Parse("2000-11-14")),
             new Visitor("lore2m@email.email", DateTime.Parse("2000-11-14")),
@@ -120,9 +122,11 @@ public class CourseTests
             new Visitor("emai9l@ipsum.email", DateTime.Parse("2020-08-20")),
             new Visitor("emai0l@ipsum.email", DateTime.Parse("2020-08-20")),
         };
-        Group group2 = new(visitors2);
-        Group group3 = new(new Visitor("jklfsd@jkfsld.lksfdj", DateTime.Parse("2000-11-14")));
-        List<Visitor> visitors4 = new()
+        Group group3 = new(visitors3);
+        
+        Group group4 = new(new Visitor("jklfsd@jkfsld.lksfdj", DateTime.Parse("2000-11-14")));
+        
+        List<Visitor> visitors5 = new()
         {
             new Visitor("lorem@e13mail.email", DateTime.Parse("2000-11-14")),
             new Visitor("lorem@e14mail.email", DateTime.Parse("2000-11-14")),
@@ -135,7 +139,8 @@ public class CourseTests
             new Visitor("email@i11psum.email", DateTime.Parse("2020-08-20")),
             new Visitor("email@i13psum.email", DateTime.Parse("2020-08-20")),
         };
-        Group group4 = new(visitors4);
+        Group group5 = new(visitors5);
+        
         List<Visitor> visitors6 = new()
         {
             new Visitor("lorem@e13mail.email", DateTime.Parse("2000-11-14")),
@@ -150,12 +155,51 @@ public class CourseTests
             new Visitor("email@i13psum.email", DateTime.Parse("2020-08-20")),
         };
         Group group6 = new(visitors6);
+        
+        List<Visitor> visitors7 = new()
+        {
+            new Visitor("lorem@e131mail.email", DateTime.Parse("2000-11-14")),
+            new Visitor("lorem@e141mail.email", DateTime.Parse("2000-11-14")),
+            
+            new Visitor("email@i191p1sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i101p2sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i111p3sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i131p4sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i131p5sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i191p6sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i101p7sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i111p8sum.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i131p9sum.email", DateTime.Parse("2020-08-20")),
+            
+            new Visitor("email@i191ps4411um.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i101ps44u12m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i111ps44u13m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i131ps44u14m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i131ps44u15m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i191ps44u16m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i101ps44u17m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i111ps44u18m.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i1324231psum.email", DateTime.Parse("2020-08-20")),
+            
+            new Visitor("lorem@e151mail.email", DateTime.Parse("2000-11-14")),
+            
+            new Visitor("email@i131ps444454um.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i191p44456s4um.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i101ps435634um.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i111ps224666um.email", DateTime.Parse("2020-08-20")),
+            new Visitor("email@i131ps345553um.email", DateTime.Parse("2020-08-20")),
+            
+            new Visitor("ipsum@e161mail.email", DateTime.Parse("2000-05-09")),
+        };
+        Group group7 = new(visitors7);
 
         course.TryAddGroup(group1);
         course.TryAddGroup(group2);
         course.TryAddGroup(group3);
         course.TryAddGroup(group4);
         course.TryAddGroup(group5);
+        course.TryAddGroup(group6);
+        course.TryAddGroup(group7);
 
         // Act
         course.CalculateVisitorPlacements();
