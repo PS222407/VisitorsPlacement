@@ -40,8 +40,6 @@ public class Course
 
     public void CalculateVisitorPlacements()
     {
-        // TODO: group can have 20 children and 1 adult, this creates an impossible situation because each subgroup also needs to have an adult
-
         List<Group> groupsOrderedByChildren = _groups.OrderByDescending(g => g.Visitors.Any(v => !v.IsAdult(_startDate))).ToList();
 
         int rowNumber = 1;
