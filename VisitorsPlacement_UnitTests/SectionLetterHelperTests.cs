@@ -1,6 +1,6 @@
-﻿using VisitorsPlacement._20_BusinessLogic.Services;
+﻿using VisitorsPlacement_20_BusinessLogic.Services;
 
-namespace VisitorsPlacement.UnitTests;
+namespace VisitorsPlacement_UnitTests;
 
 public class SectionLetterHelperTests
 {

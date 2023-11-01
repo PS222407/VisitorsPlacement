@@ -1,4 +1,4 @@
-﻿namespace VisitorsPlacement._20_BusinessLogic.Models;
+﻿namespace VisitorsPlacement_20_BusinessLogic.Models;
 
 public class Visitor
 {

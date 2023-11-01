@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace VisitorsPlacement._20_BusinessLogic.Services;
+namespace VisitorsPlacement_20_BusinessLogic.Services;
 
 public static class SectionLetterHelper
 {

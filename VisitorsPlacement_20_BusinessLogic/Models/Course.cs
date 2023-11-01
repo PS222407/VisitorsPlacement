@@ -1,6 +1,6 @@
-﻿using VisitorsPlacement._20_BusinessLogic.Services;
+﻿using VisitorsPlacement_20_BusinessLogic.Services;
 
-namespace VisitorsPlacement._20_BusinessLogic.Models;
+namespace VisitorsPlacement_20_BusinessLogic.Models;
 
 public class Course
 {
@@ -40,13 +40,13 @@ public class Course
 
     public void CalculateVisitorPlacements()
     {
-        List<Group> groupsOrderedByChildren = _groups.OrderByDescending(g => g.Visitors.Any(v => !v.IsAdult(_startDate))).ToList();
+        List<Group> groupsOrderedByChildrenFirstThenRegistrationDate = _groups.OrderByDescending(g => g.Visitors.Any(v => !v.IsAdult(_startDate))).ThenBy(g => g.RegistrationDate).ToList();
 
         int rowNumber = 1;
         int columnNumber = 1;
         string sectionLetter = "A";
 
-        foreach (Group group in groupsOrderedByChildren)
+        foreach (Group group in groupsOrderedByChildrenFirstThenRegistrationDate)
         {
             List<Visitor> visitorsOrderedByChildren = group.Visitors.OrderBy(v => v.IsAdult(_startDate)).ToList();
             foreach (Visitor visitor in visitorsOrderedByChildren)

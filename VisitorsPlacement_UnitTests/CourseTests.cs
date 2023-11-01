@@ -1,6 +1,6 @@
-﻿using VisitorsPlacement._20_BusinessLogic.Models;
+﻿using VisitorsPlacement_20_BusinessLogic.Models;
 
-namespace VisitorsPlacement.UnitTests;
+namespace VisitorsPlacement_UnitTests;
 
 public class CourseTests
 {

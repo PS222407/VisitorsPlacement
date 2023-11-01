@@ -1,4 +1,4 @@
-﻿namespace VisitorsPlacement._20_BusinessLogic.Models;
+﻿namespace VisitorsPlacement_20_BusinessLogic.Models;
 
 public class Group
 {
@@ -9,6 +9,8 @@ public class Group
     private const int MaxChildrenPerAdult = 9;
 
     public List<Visitor> Visitors { get; private set; }
+
+    public DateTime RegistrationDate { get; set; }
 
     public Group(Visitor visitor)
     {
