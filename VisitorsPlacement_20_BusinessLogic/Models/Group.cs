@@ -6,7 +6,7 @@ public class Group
 
     private readonly int _id;
 
-    private const int MaxChildrenPerAdult = 9;
+    public const int MaxChildrenPerAdult = 9;
 
     public List<Visitor> Visitors { get; private set; }
 
@@ -29,6 +29,16 @@ public class Group
         {
             visitor.AssignGroup(this);
         }
+    }
+    
+    public int GetId()
+    {
+        return _id;
+    }
+
+    public int GetNumberOfAdultsWatchingChildren(DateTime startDateEvent)
+    {
+        return (int)Math.Ceiling((double)GetChildren(startDateEvent).Count / MaxChildrenPerAdult);
     }
 
     public List<Visitor> GetChildren(DateTime startDateEvent)
@@ -74,5 +84,33 @@ public class Group
     public override string ToString()
     {
         return _id.ToString();
+    }
+
+    public bool FitsInSection(DateTime eventStartDate, Section section)
+    {
+        List<Visitor> children = GetChildren(eventStartDate).Where(v => !v.IsAssignedToChair()).ToList();
+        List<Visitor> adults = GetAdults(eventStartDate).Where(v => !v.IsAssignedToChair()).ToList();
+
+        if (children.Count > )
+        {
+            
+        }
+
+        Chair? chair = section.GetNextColumnChair(1);
+        if (chair == null)
+        {
+            return false;
+        }
+        
+        adults.First().TryAssignChair(chair);
+        foreach (Visitor visitor in children)
+        {
+            Chair? chair1 = section.GetNextColumnChair(1);
+            if (chair1 == null)
+            {
+                break;
+            }
+            visitor.TryAssignChair(chair1);
+        }
     }
 }

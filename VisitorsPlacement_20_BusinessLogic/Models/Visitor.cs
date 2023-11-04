@@ -27,6 +27,11 @@ public class Visitor
         return age;
     }
 
+    public bool IsAssignedToChair()
+    {
+        return Chair != null;
+    }
+
     public bool IsAdult(DateTime dateToCompare)
     {
         return AgeInYears(dateToCompare) > 12;
@@ -37,9 +42,16 @@ public class Visitor
         return !string.IsNullOrWhiteSpace(Email) && _dateOfBirth < DateTime.Now;
     }
 
-    public void AssignChair(Chair chair)
+    public bool TryAssignChair(Chair chair)
     {
+        if (chair.Visitor != null)
+        {
+            return false;
+        }
+
+        chair.AssignVisitor(this);
         Chair = chair;
+        return true;
     }
 
     public void AssignGroup(Group group)

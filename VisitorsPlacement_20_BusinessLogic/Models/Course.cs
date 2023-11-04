@@ -1,25 +1,17 @@
-﻿using VisitorsPlacement_20_BusinessLogic.Exceptions;
-using VisitorsPlacement_20_BusinessLogic.Services;
-
-namespace VisitorsPlacement_20_BusinessLogic.Models;
+﻿namespace VisitorsPlacement_20_BusinessLogic.Models;
 
 public class Course
 {
-    private const int MaxRows = 3;
-
-    private const int MinRowLength = 3;
-
-    private const int MaxRowLength = 10;
-
     private readonly DateTime _startDate;
-
-    private List<Chair> _chairs = new();
-
+    
     private List<Group> _groups = new();
 
-    public Course(DateTime startDate)
+    private List<Section> _sections;
+
+    public Course(DateTime startDate, List<Section> sections)
     {
         _startDate = startDate;
+        _sections = sections;
     }
 
     public bool TryAddGroup(Group group)
@@ -43,81 +35,60 @@ public class Course
     {
         List<Group> groupsWithChildren = _groups.Where(g => g.GetChildren(_startDate).Any()).OrderBy(g => g.RegistrationDate).ToList();
 
-        int columnNumber = 0;
-        string sectionLetter = "A";
-
-        bool firstLoop = true;
-        foreach (Group group in groupsWithChildren)
+        foreach (Section section in _sections)
         {
-            if (!firstLoop)
+            foreach (Group group in groupsWithChildren)
             {
-                sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
-                columnNumber = 0;
+                bool fits = group.FitsInSection(_startDate, section);
             }
-
-            firstLoop = false;
-
-            foreach (Visitor visitor in new List<Visitor>(group.Visitors.OrderBy(v => v.IsAdult(_startDate))))
-            {
-                if (columnNumber + 1 > MaxRowLength)
-                {
-                    sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
-                    columnNumber = 1;
-                }
-                else
-                {
-                    columnNumber++;
-                }
-
-                Chair chair = new(1, columnNumber, sectionLetter);
-                if (chair.ColumnNumber == MaxRowLength)
-                {
-                    Visitor? adult = group.GetAdults(_startDate).FirstOrDefault(adult => adult.Chair == null);
-
-                    if (adult == null)
-                    {
-                        throw new TestException();
-                    }
-
-                    adult.AssignChair(chair);
-                }
-                else
-                {
-                    if (visitor.Chair == null)
-                    {
-                        visitor.AssignChair(chair);
-                    }
-                }
-            }
-
-            // foreach (Visitor visitor in visitorsOrderedByChildren)
-            // {
-            //     Chair chair = new(rowNumber, columnNumber, sectionLetter);
-            //     chair.AssignVisitor(visitor);
-            //     visitor.AssignChair(chair);
-            //     _chairs.Add(chair);
-            //
-            //     if (columnNumber + 1 > MaxRowLength)
-            //     {
-            //         columnNumber = 1;
-            //
-            //         if (rowNumber + 1 > MaxRows)
-            //         {
-            //             rowNumber = 1;
-            //             sectionLetter = SectionLetterHelper.GetNextAlphabet(sectionLetter);
-            //         }
-            //         else
-            //         {
-            //             rowNumber++;
-            //         }
-            //     }
-            //     else
-            //     {
-            //         columnNumber++;
-            //     }
-            // }
         }
 
-        List<Chair>? a = _chairs;
+        // foreach (Group group in groupsWithChildren)
+        // {
+        //     List<List<Visitor>> subGroups = DivideInSubGroups(group);
+        //
+        //     foreach (List<Visitor> subGroup in subGroups)
+        //     {
+        //         foreach (Visitor visitor in subGroup)
+        //         {
+        //             // Chair? chair = GetNextColumnChair(sectionLetter);
+        //             // if (chair == null)
+        //             // {
+        //             //     chair = GetNextRowChair(sectionLetter);
+        //             // }
+        //
+        //             // if (group.GetChildren(_startDate).Any(c => c.Chair != null));
+        //             // {
+        //             //     
+        //             // }
+        //         
+        //             if (!visitor.IsAdult(_startDate) && chair.RowNumber == 1 && chair.ColumnNumber != MaxColumns - 1)
+        //             {
+        //                 visitor.AssignChair(chair);
+        //             }
+        //             else if (visitor.IsAdult(_startDate))
+        //             {
+        //                 visitor.AssignChair(chair);
+        //             }
+        //         }
+        //     }
+        // }
+
+        var ab = 23;
+    }
+
+    public List<List<Visitor>> DivideInSubGroups(Group group)
+    {
+        List<List<Visitor>> subGroups = group.GetChildren(_startDate).Chunk(Group.MaxChildrenPerAdult).Select(chunk => chunk.ToList()).ToList();
+        List<Visitor> adultsWatchingChildren = group.GetAdults(_startDate).Take(group.GetNumberOfAdultsWatchingChildren(_startDate)).ToList();
+            
+        foreach (List<Visitor> subGroup in subGroups)
+        {
+            Visitor adult = adultsWatchingChildren.First();
+            subGroup.Add(adult);
+            adultsWatchingChildren.Remove(adult);
+        }
+
+        return subGroups;
     }
 }
