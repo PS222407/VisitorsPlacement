@@ -10,13 +10,20 @@ public class Visitor
 
     public Chair? Chair { get; private set; }
 
-    public Visitor(string email, DateTime dateOfBirth)
+    public int AgeInYears { get; private set; }
+
+    public Visitor(string email, DateTime dateOfBirth, DateTime? eventStartDate = null)
     {
         Email = email;
         _dateOfBirth = dateOfBirth;
+
+        if (eventStartDate != null)
+        {
+            SetAge(eventStartDate.Value);
+        }
     }
 
-    private int AgeInYears(DateTime dateToCompare)
+    private int CalculateAgeInYears(DateTime dateToCompare)
     {
         int age = dateToCompare.Year - _dateOfBirth.Year;
         if (_dateOfBirth.AddYears(age) > dateToCompare)
@@ -26,15 +33,20 @@ public class Visitor
 
         return age;
     }
-
+    
+    public void SetAge(DateTime startDate)
+    {
+        AgeInYears = CalculateAgeInYears(startDate);
+    }
+    
     public bool IsAssignedToChair()
     {
         return Chair != null;
     }
 
-    public bool IsAdult(DateTime dateToCompare)
+    public bool IsAdult()
     {
-        return AgeInYears(dateToCompare) > 12;
+        return AgeInYears > 12;
     }
 
     public bool IsValid()
@@ -61,6 +73,6 @@ public class Visitor
 
     public override string ToString()
     {
-        return $"Age: {AgeInYears(DateTime.Now)} - Group: {_group} - Email: {Email}";
+        return $"Age: {CalculateAgeInYears(DateTime.Now)} - Group: {_group} - Email: {Email}";
     }
 }

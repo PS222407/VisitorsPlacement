@@ -36,10 +36,10 @@ public class VisitorTests
     public void Visitor_is_adult_successfully()
     {
         // Arrange
-        Visitor visitor = new("adult", DateTime.Parse("2000-01-01"));
+        Visitor visitor = new("adult", DateTime.Parse("2000-01-01"), DateTime.Parse("2013-01-01"));
 
         // Act
-        bool result = visitor.IsAdult(DateTime.Parse("2013-01-01"));
+        bool result = visitor.IsAdult();
 
         // Assert
         Assert.That(result, Is.True);
@@ -49,10 +49,10 @@ public class VisitorTests
     public void Visitor_is_adult_fails()
     {
         // Arrange
-        Visitor visitor = new("child", DateTime.Parse("2000-01-01"));
+        Visitor visitor = new("child", DateTime.Parse("2000-01-01"), DateTime.Parse("2010-01-01"));
 
         // Act
-        bool result = visitor.IsAdult(DateTime.Parse("2010-01-01"));
+        bool result = visitor.IsAdult();
 
         // Assert
         Assert.That(result, Is.False);

@@ -17,7 +17,10 @@ public class Course
     public bool TryAddGroup(Group group)
     {
         if (DateTime.Now > _startDate) return false;
-        if (!group.IsValid(_startDate)) return false;
+
+        group.SetVisitorsAge(_startDate);
+        
+        if (!group.IsValid()) return false;
         if (!AreUniqueUsers(group)) return false;
         _groups.Add(group);
 
@@ -33,15 +36,15 @@ public class Course
 
     public void CalculateVisitorPlacements()
     {
-        List<Group> groupsWithChildren = _groups.Where(g => g.GetChildren(_startDate).Any()).OrderBy(g => g.RegistrationDate).ToList();
-
-        foreach (Section section in _sections)
-        {
-            foreach (Group group in groupsWithChildren)
-            {
-                bool fits = group.FitsInSection(_startDate, section);
-            }
-        }
+        // List<Group> groupsWithChildren = _groups.Where(g => g.GetChildren(_startDate).Any()).OrderBy(g => g.RegistrationDate).ToList();
+        //
+        // foreach (Section section in _sections)
+        // {
+        //     foreach (Group group in groupsWithChildren)
+        //     {
+        //         bool fits = group.FitsInSection(_startDate, section);
+        //     }
+        // }
 
         // foreach (Group group in groupsWithChildren)
         // {
@@ -79,8 +82,8 @@ public class Course
 
     public List<List<Visitor>> DivideInSubGroups(Group group)
     {
-        List<List<Visitor>> subGroups = group.GetChildren(_startDate).Chunk(Group.MaxChildrenPerAdult).Select(chunk => chunk.ToList()).ToList();
-        List<Visitor> adultsWatchingChildren = group.GetAdults(_startDate).Take(group.GetNumberOfAdultsWatchingChildren(_startDate)).ToList();
+        List<List<Visitor>> subGroups = group.GetChildren().Chunk(Group.MaxChildrenPerAdult).Select(chunk => chunk.ToList()).ToList();
+        List<Visitor> adultsWatchingChildren = group.GetAdults().Take(group.GetNumberOfAdultsWatchingChildren()).ToList();
             
         foreach (List<Visitor> subGroup in subGroups)
         {
