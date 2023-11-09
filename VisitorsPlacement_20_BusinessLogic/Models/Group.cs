@@ -12,17 +12,31 @@ public class Group
 
     public DateTime RegistrationDate { get; set; }
 
-    public Group(Visitor visitor)
+    public Group(Visitor visitor, int? id = null)
     {
-        _id = Interlocked.Increment(ref _nextId);
+        if (id != null)
+        {
+            _id = id.Value;
+        }
+        else
+        {
+            _id = Interlocked.Increment(ref _nextId);
+        }
 
         Visitors = new List<Visitor> { visitor };
         visitor.AssignGroup(this);
     }
 
-    public Group(List<Visitor> visitors)
+    public Group(List<Visitor> visitors, int? id = null)
     {
-        _id = Interlocked.Increment(ref _nextId);
+        if (id != null)
+        {
+            _id = id.Value;
+        }
+        else
+        {
+            _id = Interlocked.Increment(ref _nextId);
+        }
 
         Visitors = visitors;
         foreach (Visitor visitor in visitors)

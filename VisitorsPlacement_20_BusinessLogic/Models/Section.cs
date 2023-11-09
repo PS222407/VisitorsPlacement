@@ -11,7 +11,7 @@ public class Section
     public int NumberOfRows { get; private set; }
 
     public IReadOnlyList<Chair> Chairs => _chairs;
-    
+
     private const int MaxRows = 3;
 
     private const int MinRowLength = 3;
@@ -38,15 +38,15 @@ public class Section
         Chair? lastOccupiedChairInColumn = _chairs.Where(c => c.RowNumber == rowNumber && c.Visitor != null).MaxBy(c => c.ColumnNumber);
         if (lastOccupiedChairInColumn == null)
         {
-            return _chairs.First(c => c.RowNumber == rowNumber); 
+            return _chairs.First(c => c.RowNumber == rowNumber);
         }
-    
+
         int nextColumnIndex = lastOccupiedChairInColumn.ColumnNumber + 1;
         if (nextColumnIndex > NumberOfColumns)
         {
             return null;
         }
-        
+
         return _chairs.First(c => c.RowNumber == rowNumber && c.ColumnNumber == nextColumnIndex);
     }
 
@@ -66,4 +66,20 @@ public class Section
     //     
     //     return new Chair(nextRowIndex, lastOccupiedChairInRow.ColumnNumber, sectionLetter);
     // }
+    public string DisplayInAscii()
+    {
+        string result = "";
+
+        for (int i = 0; i < NumberOfRows; i++)
+        {
+            for (int j = 0; j < NumberOfColumns; j++)
+            {
+                Chair chair = _chairs.First(c => c.RowNumber == i + 1 && c.ColumnNumber == j + 1);
+                result += chair.Visitor == null ? "XX " : chair.Visitor.IsAdult() ? $"{chair.Visitor.GetGroupNumber()}A " : $"{chair.Visitor.GetGroupNumber()}C ";
+            }
+            result += "\n ";
+        }
+
+        return result;
+    }
 }

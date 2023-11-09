@@ -23,6 +23,11 @@ public class Visitor
         }
     }
 
+    public int GetGroupNumber()
+    {
+        return _group?.GetId() ?? -1;
+    }
+
     private int CalculateAgeInYears(DateTime dateToCompare)
     {
         int age = dateToCompare.Year - _dateOfBirth.Year;
