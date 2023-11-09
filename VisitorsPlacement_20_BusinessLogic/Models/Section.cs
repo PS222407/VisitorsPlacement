@@ -33,6 +33,24 @@ public class Section
         }
     }
 
+    public Chair? GetNextChair()
+    {
+        int rowNumber = 1;
+        
+        Chair? nextChair = GetNextColumnChair(rowNumber);
+        while (nextChair == null)
+        {
+            rowNumber++;
+            if (rowNumber > MaxRows)
+            {
+                break;
+            }
+            nextChair = GetNextColumnChair(rowNumber);
+        }
+        
+        return nextChair;
+    }
+
     public Chair? GetNextColumnChair(int rowNumber)
     {
         Chair? lastOccupiedChairInColumn = _chairs.Where(c => c.RowNumber == rowNumber && c.Visitor != null).MaxBy(c => c.ColumnNumber);
@@ -81,5 +99,54 @@ public class Section
         }
 
         return result;
+    }
+
+    public bool TryPlaceGroup(Group group)
+    {
+        if (group.GetChildren().Count > 0)
+        {
+            // als section vol is of niet op rij 1 is of er maar 1 stoel vrij is in rij 1 return foutloos maar zonder te plaatsen
+            Chair? chair = GetNextChair();
+            if (chair == null || chair.RowNumber != 1 || IsLastChairInRow(chair))
+            {
+                return true;
+            }
+
+            foreach (Visitor child in group.GetChildren())
+            {
+                if (chair == null)
+                {
+                    return false;
+                }
+
+                if (!IsLastChairInRow(chair) && chair.RowNumber == 1)
+                {
+                    child.AssignChair(chair);
+                    chair = GetNextChair();
+                }
+                else
+                {
+                    Visitor? adult = group.GetAdults().FirstOrDefault(a => !a.IsAssignedToChair());
+                    if (adult == null)
+                    {
+                        return false;
+                    }
+                    
+                    adult.AssignChair(chair);
+                    
+                    break;
+                }
+            }
+
+            foreach (Visitor adult in group.GetAdults().Where(a => !a.IsAssignedToChair()))
+            {
+                
+            }
+        }
+    }
+
+    public bool IsLastChairInRow(Chair chair)
+    {
+        return chair.ColumnNumber == NumberOfColumns;
     }
 }

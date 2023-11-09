@@ -36,15 +36,20 @@ public class Course
 
     public void CalculateVisitorPlacements()
     {
-        // List<Group> groupsWithChildren = _groups.Where(g => g.GetChildren(_startDate).Any()).OrderBy(g => g.RegistrationDate).ToList();
-        //
-        // foreach (Section section in _sections)
-        // {
-        //     foreach (Group group in groupsWithChildren)
-        //     {
-        //         bool fits = group.FitsInSection(_startDate, section);
-        //     }
-        // }
+        List<Group> groups = _groups.OrderBy(g => g.RegistrationDate).ToList();
+        
+        foreach (Group group in groups)
+        {
+            foreach (Section section in _sections)
+            {
+                section.TryPlaceGroup(group);
+
+                if (group.Visitors.All(v => v.IsAssignedToChair()))
+                {
+                    break;
+                }
+            }
+        }
 
         // foreach (Group group in groupsWithChildren)
         // {
