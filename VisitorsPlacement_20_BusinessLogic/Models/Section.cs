@@ -18,6 +18,8 @@ public class Section
 
     private const int MaxColumns = 10;
 
+    public List<Visitor> AdultsInBuffer { get; private set; } = new();
+
     public Section(string letter, int numberOfColumns, int numberOfRows)
     {
         Letter = letter;
@@ -36,22 +38,23 @@ public class Section
     public Chair? GetNextChair()
     {
         int rowNumber = 1;
-        
+
         Chair? nextChair = GetNextColumnChair(rowNumber);
         while (nextChair == null)
         {
             rowNumber++;
-            if (rowNumber > MaxRows)
+            if (rowNumber > NumberOfRows)
             {
                 break;
             }
+
             nextChair = GetNextColumnChair(rowNumber);
         }
-        
+
         return nextChair;
     }
 
-    public Chair? GetNextColumnChair(int rowNumber)
+    private Chair? GetNextColumnChair(int rowNumber)
     {
         Chair? lastOccupiedChairInColumn = _chairs.Where(c => c.RowNumber == rowNumber && c.Visitor != null).MaxBy(c => c.ColumnNumber);
         if (lastOccupiedChairInColumn == null)
@@ -68,22 +71,6 @@ public class Section
         return _chairs.First(c => c.RowNumber == rowNumber && c.ColumnNumber == nextColumnIndex);
     }
 
-    // public Chair? GetNextRowChair(string sectionLetter)
-    // {
-    //     Chair? lastOccupiedChairInRow = _chairs.Where(c => c.SectionLetter == sectionLetter).MaxBy(c => c.RowNumber);
-    //     if (lastOccupiedChairInRow == null)
-    //     {
-    //         return new Chair(1, 1, sectionLetter);
-    //     }
-    //
-    //     int nextRowIndex = lastOccupiedChairInRow.RowNumber + 1;
-    //     if (nextRowIndex > MaxRows)
-    //     {
-    //         return null;
-    //     }
-    //     
-    //     return new Chair(nextRowIndex, lastOccupiedChairInRow.ColumnNumber, sectionLetter);
-    // }
     public string DisplayInAscii()
     {
         string result = "";
@@ -95,6 +82,7 @@ public class Section
                 Chair chair = _chairs.First(c => c.RowNumber == i + 1 && c.ColumnNumber == j + 1);
                 result += chair.Visitor == null ? "XX " : chair.Visitor.IsAdult() ? $"{chair.Visitor.GetGroupNumber()}A " : $"{chair.Visitor.GetGroupNumber()}C ";
             }
+
             result += "\n ";
         }
 
@@ -103,50 +91,97 @@ public class Section
 
     public bool TryPlaceGroup(Group group)
     {
-        if (group.GetChildren().Count > 0)
+        if (TryPlaceChildren(group) && TryPlaceAdults(group))
         {
-            // als section vol is of niet op rij 1 is of er maar 1 stoel vrij is in rij 1 return foutloos maar zonder te plaatsen
-            Chair? chair = GetNextChair();
-            if (chair == null || chair.RowNumber != 1 || IsLastChairInRow(chair))
-            {
-                return true;
-            }
+            return true;
+        }
 
-            foreach (Visitor child in group.GetChildren())
-            {
-                if (chair == null)
-                {
-                    return false;
-                }
+        RemoveGroupFromSection(group);
 
-                if (!IsLastChairInRow(chair) && chair.RowNumber == 1)
-                {
-                    child.AssignChair(chair);
-                    chair = GetNextChair();
-                }
-                else
-                {
-                    Visitor? adult = group.GetAdults().FirstOrDefault(a => !a.IsAssignedToChair());
-                    if (adult == null)
-                    {
-                        return false;
-                    }
-                    
-                    adult.AssignChair(chair);
-                    
-                    break;
-                }
-            }
+        return false;
+    }
 
-            foreach (Visitor adult in group.GetAdults().Where(a => !a.IsAssignedToChair()))
+    private void RemoveGroupFromSection(Group group)
+    {
+        foreach (Visitor visitor in group.Visitors)
+        {
+            visitor.RevokeChair();
+
+            if (AdultsInBuffer.Contains(visitor))
             {
-                
+                AdultsInBuffer.Remove(visitor);
             }
         }
     }
 
-    public bool IsLastChairInRow(Chair chair)
+    private bool TryPlaceChildren(Group group)
     {
-        return chair.ColumnNumber == NumberOfColumns;
+        foreach (Visitor child in group.GetChildren())
+        {
+            Chair? chair = GetNextChair();
+            if (chair == null || chair.RowNumber != 1 || IsLastAvailableChairInRow(chair))
+            {
+                return false;
+            }
+
+            child.AssignChair(chair);
+        }
+
+        return true;
+    }
+
+    private bool TryPlaceAdults(Group group)
+    {
+        bool firstAdultAfterChild = group.GetChildren().Any();
+        foreach (Visitor adult in group.GetAdults().Where(a => !a.IsAssignedToChair()))
+        {
+            Chair? chair = GetNextChair();
+            if (chair == null)
+            {
+                return false;
+            }
+
+            if (firstAdultAfterChild)
+            {
+                adult.AssignChair(chair);
+                firstAdultAfterChild = false;
+            }
+            else
+            {
+                int availableChairs = _chairs.Count(c => c.Visitor == null);
+
+                if (availableChairs < 1)
+                {
+                    return false;
+                }
+
+                AdultsInBuffer.Add(adult);
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsLastAvailableChairInRow(Chair chair)
+    {
+        bool isLastAvailableChairInRow = _chairs.Where(c => c.RowNumber == chair.RowNumber && c.Visitor == null).MaxBy(c => c.ColumnNumber)?.ColumnNumber == chair.ColumnNumber;
+        Chair lastAvailableChairConsideringBuffer = _chairs[_chairs.Count - AdultsInBuffer.Count - 1];
+        bool isLastChairInRowConsideringBuffer = lastAvailableChairConsideringBuffer.RowNumber == chair.RowNumber && lastAvailableChairConsideringBuffer.ColumnNumber == chair.ColumnNumber;
+
+        return isLastAvailableChairInRow || isLastChairInRowConsideringBuffer;
+    }
+
+    public void PlaceAdultsFromBuffer()
+    {
+        foreach (Visitor adult in AdultsInBuffer)
+        {
+            Chair? chair = GetNextChair();
+            if (chair == null)
+            {
+                break;
+            }
+
+            adult.AssignChair(chair);
+        }
     }
 }

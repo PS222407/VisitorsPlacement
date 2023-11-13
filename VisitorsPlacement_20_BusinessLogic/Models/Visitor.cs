@@ -56,13 +56,19 @@ public class Visitor
 
     public bool IsValid()
     {
-        return !string.IsNullOrWhiteSpace(Email) && _dateOfBirth < DateTime.Now;
+        return !string.IsNullOrWhiteSpace(Email);
     }
 
     public void AssignChair(Chair chair)
     {
         chair.AssignVisitor(this);
         Chair = chair;
+    }
+
+    public void RevokeChair()
+    {
+        Chair?.RevokeVisitor();
+        Chair = null;
     }
 
     public void AssignGroup(Group group)
@@ -72,6 +78,6 @@ public class Visitor
 
     public override string ToString()
     {
-        return $"Age: {CalculateAgeInYears(DateTime.Now)} - Group: {_group} - Email: {Email}";
+        return $"Age: {AgeInYears} - Group: {_group} - Email: {Email}";
     }
 }

@@ -26,4 +26,9 @@ public class Chair
     {
         Visitor = visitor;
     }
+
+    public void RevokeVisitor()
+    {
+        Visitor = null;
+    }
 }
