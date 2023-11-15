@@ -2,15 +2,15 @@
 
 public class Visitor
 {
-    public string Email { get; private set; }
+    public string Email { get; }
 
     private readonly DateTime _dateOfBirth;
 
     private Group? _group;
 
-    public Chair? Chair { get; private set; }
+    private Chair? _chair;
 
-    public int AgeInYears { get; private set; }
+    private int _ageInYears;
 
     public Visitor(string email, DateTime dateOfBirth, DateTime? eventStartDate = null)
     {
@@ -38,20 +38,20 @@ public class Visitor
 
         return age;
     }
-    
+
     public void SetAge(DateTime startDate)
     {
-        AgeInYears = CalculateAgeInYears(startDate);
+        _ageInYears = CalculateAgeInYears(startDate);
     }
-    
+
     public bool IsAssignedToChair()
     {
-        return Chair != null;
+        return _chair != null;
     }
 
     public bool IsAdult()
     {
-        return AgeInYears > 12;
+        return _ageInYears > 12;
     }
 
     public bool IsValid()
@@ -62,13 +62,13 @@ public class Visitor
     public void AssignChair(Chair chair)
     {
         chair.AssignVisitor(this);
-        Chair = chair;
+        _chair = chair;
     }
 
     public void RevokeChair()
     {
-        Chair?.RevokeVisitor();
-        Chair = null;
+        _chair?.RevokeVisitor();
+        _chair = null;
     }
 
     public void AssignGroup(Group group)
@@ -78,6 +78,6 @@ public class Visitor
 
     public override string ToString()
     {
-        return $"Age: {AgeInYears} - Group: {_group} - Email: {Email}";
+        return $"Age: {_ageInYears} - Group: {_group} - Email: {Email}";
     }
 }

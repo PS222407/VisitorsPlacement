@@ -31,7 +31,8 @@ public class Course
     {
         List<Group> groups = new(_groups) { group };
 
-        return groups.SelectMany(g => g.Visitors).Select(v => v.Email).Distinct().Count() == groups.SelectMany(g => g.Visitors).Select(v => v.Email).Count();
+        return groups.SelectMany(g => g.Visitors).Select(v => v.Email).Distinct().Count() 
+               == groups.SelectMany(g => g.Visitors).Select(v => v.Email).Count();
     }
 
     public void CalculateVisitorPlacements()

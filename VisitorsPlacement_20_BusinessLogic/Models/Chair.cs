@@ -2,11 +2,11 @@
 
 public class Chair
 {
-    public int RowNumber { get; private set; }
+    public int RowNumber { get; }
 
-    public int ColumnNumber { get; private set; }
+    public int ColumnNumber { get; }
 
-    public string SectionLetter { get; private set; }
+    private readonly string _sectionLetter;
 
     public Visitor? Visitor { get; private set; }
 
@@ -14,12 +14,12 @@ public class Chair
     {
         RowNumber = rowNumber;
         ColumnNumber = columnNumber;
-        SectionLetter = sectionLetter;
+        _sectionLetter = sectionLetter;
     }
 
     public override string ToString()
     {
-        return $"{SectionLetter}{RowNumber}-{ColumnNumber}";
+        return $"{_sectionLetter}{RowNumber}-{ColumnNumber}";
     }
 
     public void AssignVisitor(Visitor visitor)
